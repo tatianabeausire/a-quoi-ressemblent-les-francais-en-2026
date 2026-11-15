@@ -30,6 +30,11 @@ header.top .kicker{font:500 14px var(--head);letter-spacing:.02em;color:#e3ecdf;
 header.top .kicker::before{content:"";width:12px;height:12px;border-radius:4px;background:#e2231a;display:inline-block}
 header.top h1{font:700 clamp(26px,4.6vw,42px)/1.12 var(--head);margin:10px 0 6px;color:#fff}
 header.top p{margin:0;color:#e9f1e6}
+header.top .zooms{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+header.top .zoom{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--head);color:#fff;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:8px 18px;text-decoration:none;transition:background .15s}
+header.top .zoom:hover{background:rgba(255,255,255,.3)}
+header.top .zoom:focus-visible{outline:3px solid #fff;outline-offset:2px}
+header.top .zoom svg{width:20px;height:20px;flex:none}
 nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
 nav.tabs .in{max-width:980px;margin:0 auto;padding:12px 20px;display:flex;gap:10px;overflow-x:auto}
 nav.tabs button{font:600 16px var(--head);padding:10px 20px;border:0;background:var(--card);color:var(--ink);cursor:pointer;border-radius:999px;white-space:nowrap}
@@ -210,6 +215,10 @@ table.kw tr.ex0 td{border-bottom:2px dashed var(--line);padding-bottom:13px}
   <div class="kicker">France Inter · Grand bien vous fasse</div>
   <h1>À quoi ressemblent les Français en 2026&nbsp;?</h1>
   <p>Avec les auteurs de <em>Nous, les Français</em> · Ali Rebeihi</p>
+  <div class="zooms">
+    <a class="zoom" id="zoom1" href="https://us06web.zoom.us/j/84969739898?pwd=pBU68wWl7O5zcit062t3cb6NlBes0Q.1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="13" height="12" rx="2.5"/><path d="M15 10.5l6-3.5v10l-6-3.5z"/></svg>dimanche 22 novembre 11h00 (Moscou)</a>
+    <a class="zoom" id="zoom2" href="https://us06web.zoom.us/j/84438477162?pwd=oy2b3tTxwAdN3WEFklnkHLnPHBIMIH.1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="13" height="12" rx="2.5"/><path d="M15 10.5l6-3.5v10l-6-3.5z"/></svg>lundi 23 novembre 19h00 (Moscou)</a>
+  </div>
 </div></header>
 <nav class="tabs" role="tablist" aria-label="Sections">
   <div class="in">
