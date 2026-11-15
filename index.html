@@ -512,6 +512,7 @@ function evalQ(q,fin){
     var k0=key(v);
     if(q._ans.some(function(a){return key(a)===k0}))return 'ok';
     if(fin!==false&&near(v,q._ans))return 'accent';
+    if(fin==='blur'&&q._redblur)return 'wrong';
     return '';
   }
   if(q.tagName==='SELECT'){
@@ -558,12 +559,13 @@ function wire(g){
     var evt=q.tagName==='SELECT'?'change':'input';
     if(store[q.id]!=null){q.value=store[q.id]}
     if(g.lenient)q._lenient=true;
+    if(g.redBlur)q._redblur=true;
     if(g.lenient){
       q.addEventListener('input',function(){store[q.id]=q.value;save();paint(q,false);updateScore(g);clearTimeout(q._t);q._t=setTimeout(function(){paint(q,true);updateScore(g)},1400)});
-      q.addEventListener('blur',function(){clearTimeout(q._t);paint(q,true);updateScore(g)});
-      q.addEventListener('change',function(){clearTimeout(q._t);paint(q,true);updateScore(g)});
+      q.addEventListener('blur',function(){clearTimeout(q._t);paint(q,'blur');updateScore(g)});
+      q.addEventListener('change',function(){clearTimeout(q._t);paint(q,'blur');updateScore(g)});
     }else q.addEventListener(evt,function(){store[q.id]=q.value;save();paint(q);updateScore(g)});
-    paint(q);
+    paint(q,g.redBlur&&q.value?'blur':undefined);
   });
   updateScore(g);
 }
@@ -736,10 +738,12 @@ function hookScore(panels,sc){
 /* Activité 5 */
 (function(){
   var s=actShell('a5','Activité 5','B2 ou C1–C2');var h=$('h2',s);
-  s.appendChild(el('p','consigne','Complétez la deuxième phrase pour qu’elle ait le même sens que la première. Utilisez le mot donné sans le modifier. Écrivez entre deux et cinq mots, mot donné compris.'));
+  (function(){var cp=el('p','consigne','Complétez la deuxième phrase pour qu’elle ait le même sens que la première. Utilisez le mot donné sans le modifier.');
+  cp.appendChild(document.createElement('br'));cp.appendChild(document.createTextNode('Écrivez '));
+  cp.appendChild(el('b',null,'ENTRE 2 ET 5 MOTS'));cp.appendChild(document.createTextNode(', mot donné compris.'));s.appendChild(cp)})();
   var panels=[];
   [['B2','B2'],['C1','C1-C2']].forEach(function(lv){
-    var root=el('div');var g={qs:[],scoreEl:el('span'),countable:false};
+    var root=el('div');var g={qs:[],scoreEl:el('span'),countable:false,lenient:true,redBlur:true};
     var tbl=el('table','kw');var n=0;
     var xr=el('tr','ex0');xr.appendChild(el('td','n','0.'));
     var xd=el('td');xd.appendChild(el('span','src','La disparition des lieux de rencontre me frappe particulièrement.'));
