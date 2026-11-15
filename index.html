@@ -201,6 +201,27 @@ table.kw tr.ex0 td{border-bottom:2px dashed var(--line);padding-bottom:13px}
 .dz-float{width:100%;max-width:760px;animation:dzfloat 4.5s ease-in-out infinite}
 @keyframes dzfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .dz-nav{flex-wrap:wrap;justify-content:center}
+.print-btn{margin-left:auto}
+@media print{
+  @page{margin:14mm}
+  header.top,nav.tabs,#p-activites>.card,#acts .toolbar,.levels,.toast,.sc{display:none!important}
+  body,main{background:#fff!important;padding:0!important}
+  .panel{display:none!important}
+  #p-activites{display:block!important}
+  #acts,#acts *{background:#fff!important;color:#000!important;box-shadow:none!important;text-shadow:none!important}
+  #acts section,#acts .card{border:1px solid #888!important;border-radius:10px!important;break-inside:auto;margin:0 0 14px!important}
+  #acts li,#acts tr,#acts .groups li{break-inside:avoid}
+  #acts input.q,#acts input.q.ok,#acts input.q.wrong,#acts input.q.accent,#acts input.q.empty-rev{border:0!important;border-bottom:1.5px solid #000!important;border-radius:0!important}
+  #a4 input.q,#a5 input.q{width:16em!important;height:1.9em}
+  #acts .rev{display:none!important}
+  #acts [data-lvl][hidden]{display:block!important}
+  #acts [data-lvl]::before{content:"Niveau " attr(data-lvl);display:block;font-weight:700;margin:12px 0 4px}
+  .bank{position:static!important}
+  .bank span,table.kw .kwd{border:1px solid #000!important}
+  .bank span.used{text-decoration:none!important;opacity:1!important}
+  #acts select{-webkit-appearance:none;appearance:none;width:3em;border:0!important;border-bottom:1.5px solid #000!important;border-radius:0!important;color:transparent!important}
+  #acts .score{display:none!important}
+}
 @media (prefers-reduced-motion:reduce){.dz-float{animation:none}.dz-tour,.dz-box{transition:none}}
 @media (max-width:600px){.dz-card{padding:16px 18px 22px;border-radius:22px}.dz-q{font-size:21px;min-height:9em}.dz-ru{font-size:17px}}
 @media (prefers-reduced-motion:reduce){.dz-card{transition:none}}
@@ -267,6 +288,7 @@ table.kw tr.ex0 td{border-bottom:2px dashed var(--line);padding-bottom:13px}
       <div class="toolbar">
         <button class="btn" id="clearAll">Tout effacer</button>
         <span id="confirmBox"></span>
+        <button class="btn print-btn" id="printBtn" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="9" rx="2"/><path d="M6 14h12v7H6z"/></svg>Imprimer</button>
         </div>
       <div class="prog" id="prog">
         <div class="prog-top"><span id="progDone"></span><span id="progOk"></span></div>
@@ -752,7 +774,7 @@ function hookScore(panels,sc){
   cp.appendChild(el('b',null,'ENTRE 2 ET 5 MOTS'));cp.appendChild(document.createTextNode(', mot donné compris.'));s.appendChild(cp)})();
   var panels=[];
   [['B2','B2'],['C1','C1-C2']].forEach(function(lv){
-    var root=el('div');var g={qs:[],scoreEl:el('span'),countable:false,lenient:true,redBlur:true};
+    var root=el('div');root.setAttribute('data-lvl',lv[1]);var g={qs:[],scoreEl:el('span'),countable:false,lenient:true,redBlur:true};
     var tbl=el('table','kw');var n=0;
     var xr=el('tr','ex0');xr.appendChild(el('td','n','0.'));
     var xd=el('td');xd.appendChild(el('span','src','La disparition des lieux de rencontre me frappe particulièrement.'));
@@ -877,6 +899,7 @@ function hookScore(panels,sc){
 
 /* ---------- global buttons ---------- */
 function toast(t){var d=el('div','toast',t);document.body.appendChild(d);setTimeout(function(){d.remove()},2200)}
+$('#printBtn').addEventListener('click',function(){window.print()});
 $('#clearAll').addEventListener('click',function(){
   var box=$('#confirmBox');box.textContent='';
   var c=el('span','confirm');c.appendChild(document.createTextNode('Effacer toutes vos réponses ?'));
