@@ -26,10 +26,13 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.55}
 header.top{padding:34px 20px 26px;background:linear-gradient(100deg,#1d2336 0%,#3f5846 45%,#98d27f 100%)}
 header.top .in{max-width:980px;margin:0 auto}
-header.top .kicker{font:500 14px var(--head);letter-spacing:.02em;color:#e3ecdf;display:flex;align-items:center;gap:10px}
+header.top .kicker{flex-wrap:wrap;font:500 14px var(--head);letter-spacing:.02em;color:#e3ecdf;display:flex;align-items:center;gap:10px}
 header.top .kicker::before{content:"";width:12px;height:12px;border-radius:4px;background:#e2231a;display:inline-block}
 header.top h1{font:700 clamp(26px,4.6vw,42px)/1.12 var(--head);margin:10px 0 6px;color:#fff}
 header.top p{margin:0;color:#e9f1e6}
+header.top .tg{display:inline-flex;align-items:center;gap:6px;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;margin:0}
+header.top .tg:hover{text-decoration-thickness:2px}
+header.top .tg svg{width:15px;height:15px;flex:none}
 header.top .zooms{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 header.top .zoom{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--head);color:#fff;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:8px 18px;text-decoration:none;transition:background .15s}
 header.top .zoom:hover{background:rgba(255,255,255,.3)}
@@ -202,6 +205,15 @@ table.kw tr.ex0 td{border-bottom:2px dashed var(--line);padding-bottom:13px}
 @keyframes dzfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .dz-nav{flex-wrap:wrap;justify-content:center}
 .print-btn{margin-left:auto}
+#corrige{display:none}
+@media print{
+  #corrige{display:block!important;break-before:page;color:#000;font:13px/1.5 var(--head)}
+  #corrige h2{font-size:20px;margin:0 0 10px}
+  #corrige h3{font-size:15px;margin:12px 0 4px}
+  #corrige .cg-l{font-weight:700;margin:6px 0 2px}
+  #corrige .cg-r{margin:0 0 6px}
+  #corrige .cg-i{display:inline-block;margin:0 16px 3px 0}
+}
 @media print{
   @page{margin:14mm}
   header.top,nav.tabs,#p-activites>.card,#acts .toolbar,.levels,.toast,.sc{display:none!important}
@@ -233,7 +245,7 @@ table.kw tr.ex0 td{border-bottom:2px dashed var(--line);padding-bottom:13px}
 </head>
 <body>
 <header class="top"><div class="in">
-  <div class="kicker">France Inter · Grand bien vous fasse</div>
+  <div class="kicker">France Inter · Grand bien vous fasse · <a class="tg" href="https://t.me/marcelprout_fr" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.9 3.4a1 1 0 0 0-1.03-.17L2.7 10.4a1 1 0 0 0 .08 1.9l4.6 1.5 1.8 5.5a1 1 0 0 0 1.7.4l2.5-2.6 4.7 3.5a1 1 0 0 0 1.6-.6l3.2-16.2a1 1 0 0 0-.98-1.2zM9.3 13.1l8.4-5.2-6.6 6.3-.3 3-1.5-4.1z"/></svg>Увидела Париж и не умерла</a></div>
   <h1>À quoi ressemblent les Français en 2026&nbsp;?</h1>
   <p>Avec les auteurs de <em>Nous, les Français</em> · Ali Rebeihi</p>
   <div class="zooms">
@@ -296,6 +308,7 @@ table.kw tr.ex0 td{border-bottom:2px dashed var(--line);padding-bottom:13px}
       </div>
     </div>
     <div id="acts"></div>
+    <div id="corrige" aria-hidden="true"></div>
   </section>
 
   <section class="panel" id="p-discussion" role="tabpanel" aria-labelledby="t-discussion" hidden>
@@ -731,7 +744,7 @@ var acts=$('#acts');
   s.appendChild(el('p','consigne','Transformez le mot de droite pour compléter la phrase. Accordez si nécessaire.'));
   var panels=[];
   [['B2','B2'],['C1','C1-C2']].forEach(function(lv){
-    var root=el('div');var data=A4[lv[0]];
+    var root=el('div');root.setAttribute('data-lvl',lv[1]);var data=A4[lv[0]];
     var g={qs:[],scoreEl:el('span'),countable:false};
     var ol=el('ol','items');
     var ex=el('li','ex0');ex.value=0;
@@ -899,7 +912,28 @@ function hookScore(panels,sc){
 
 /* ---------- global buttons ---------- */
 function toast(t){var d=el('div','toast',t);document.body.appendChild(d);setTimeout(function(){d.remove()},2200)}
-$('#printBtn').addEventListener('click',function(){window.print()});
+function buildCorrige(){
+  var c=$('#corrige');c.textContent='';
+  c.appendChild(el('h2',null,'Corrigé'));
+  $$('#acts > section.act').forEach(function(sec){
+    var t=sec.querySelector('h2');var title=t?t.firstChild.textContent:'';
+    var panels=$$('[data-lvl]',sec);if(!panels.length)panels=[sec];
+    var box=el('div','cg');box.appendChild(el('h3',null,title));
+    panels.forEach(function(p){
+      if(p.getAttribute&&p.getAttribute('data-lvl'))box.appendChild(el('div','cg-l','Niveau '+p.getAttribute('data-lvl')));
+      var qs=[].slice.call(p.querySelectorAll('input.q,select.q')).filter(function(q){return q._ans});
+      var row=el('p','cg-r');
+      qs.forEach(function(q,k){
+        var a=q.tagName==='SELECT'?q._ans[0]:q._ans.join(' / ');
+        var b=el('span','cg-i');b.appendChild(el('b',null,(k+1)+'. '));b.appendChild(document.createTextNode(a));row.appendChild(b);
+      });
+      box.appendChild(row);
+    });
+    c.appendChild(box);
+  });
+}
+$('#printBtn').addEventListener('click',function(){buildCorrige();window.print()});
+window.addEventListener('beforeprint',buildCorrige);
 $('#clearAll').addEventListener('click',function(){
   var box=$('#confirmBox');box.textContent='';
   var c=el('span','confirm');c.appendChild(document.createTextNode('Effacer toutes vos réponses ?'));
